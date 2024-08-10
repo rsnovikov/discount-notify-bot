@@ -14,12 +14,13 @@ export class ParserService {
 
   async parseProduct(productUrl: string): Promise<string> {
     try {
+      const urlObj = new URL(productUrl);
       const response = await fetch(productUrl, {
         headers: {
           // TODO: add geo
           // TODO: add correct user-agent
           "User-Agent": this.userAgent,
-          Host: "online.globus.ru",
+          Host: urlObj.hostname,
         },
       });
       const html = await response.text();
