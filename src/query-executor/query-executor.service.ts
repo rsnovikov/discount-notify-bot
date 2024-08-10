@@ -1,15 +1,28 @@
 import { inject, injectable } from "inversify";
 import { TYPES } from "../TYPES";
 import { IConfig } from "../config/config.interface";
-import { ClientConfig } from "pg";
+import { Client, ClientConfig } from "pg";
+import { ConfigKeys } from "../config/config-keys";
 @injectable()
 export class QueryExecutorService {
   private readonly clientConfig: ClientConfig;
 
   constructor(@inject(TYPES.Config) private readonly config: IConfig) {
-    this.clientConfig = {};
-    try {
-    } catch (e) {}
+    this.clientConfig = {
+      database: config.get(ConfigKeys.POSTGRES_DB),
+      user: config.get(ConfigKeys.POSTGRES_USER),
+      password: config.get(ConfigKeys.POSTGRES_PASSWORD),
+      port: Number(config.get(ConfigKeys.POSTGRES_PORT)),
+    };
+
+    this.checkConnection()
+      .then(() => {
+        console.log("successfully connected to postgres");
+      })
+      .catch((e) => {
+        console.error(`Error while connect to postgres: ${e}`);
+        process.exit(1);
+      });
   }
 
   executeQuery() {
@@ -19,5 +32,17 @@ export class QueryExecutorService {
     //     user: this.config.get(ConfigKeys.POSTGRES_USER),
     //   });
     // } catch (e) {}
+  }
+
+  async checkConnection() {
+    try {
+      const client = new Client(this.clientConfig);
+      await client.connect();
+
+      const res = await client.query("SELECT now()");
+      await client.end();
+    } catch (e) {
+      throw e;
+    }
   }
 }

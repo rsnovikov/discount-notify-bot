@@ -4,12 +4,15 @@ import { inject, injectable } from "inversify";
 import { IConfig } from "../config/config.interface";
 import { TYPES } from "../TYPES";
 import { ParserService } from "../parser/parser.service";
+import { QueryExecutorService } from "../query-executor/query-executor.service";
 
 @injectable()
 export class BotService {
   constructor(
     @inject(TYPES.Config) private readonly config: IConfig,
     @inject(TYPES.ParserService) private readonly parserService: ParserService,
+    @inject(TYPES.QueryExecutorService)
+    private readonly queryExecutorService: QueryExecutorService,
   ) {
     const bot = new Telegraf(config.get(ConfigKeys.TG_TOKEN));
     // bot.start((ctx) => ctx.reply("asd"));
