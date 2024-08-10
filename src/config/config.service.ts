@@ -5,7 +5,7 @@ import { injectable } from "inversify";
 
 @injectable()
 export class ConfigService implements IConfig {
-  parsed: DotenvParseOutput;
+  private readonly parsed: DotenvParseOutput;
   constructor() {
     const { parsed, error } = config();
 
