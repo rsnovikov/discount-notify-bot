@@ -8,7 +8,7 @@ import { ConfigKeys } from "../config/config-keys";
 @injectable()
 export class ParserService {
   private readonly userAgent: string;
-  constructor(@inject(TYPES.Config) config: IConfig) {
+  constructor(@inject(TYPES.Config) private readonly config: IConfig) {
     this.userAgent = config.get(ConfigKeys.USER_AGENT);
   }
 

@@ -3,4 +3,5 @@ export const TYPES = {
   BotService: Symbol.for("BotService"),
   QueryExecutorService: Symbol.for("QueryExecutorService"),
   ParserService: Symbol.for("ParserService"),
+  UserService: Symbol.for("UserService"),
 };

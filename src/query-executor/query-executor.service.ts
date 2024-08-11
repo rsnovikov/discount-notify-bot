@@ -25,13 +25,17 @@ export class QueryExecutorService {
       });
   }
 
-  executeQuery() {
-    return "queryExecute";
-    // try {
-    //   const client = new Client({
-    //     user: this.config.get(ConfigKeys.POSTGRES_USER),
-    //   });
-    // } catch (e) {}
+  async executeQuery(query: string, params?: any[]) {
+    const client = new Client(this.clientConfig);
+    try {
+      await client.connect();
+      return await client.query(query, params);
+    } catch (e) {
+      console.error(e);
+      throw e;
+    } finally {
+      await client.end();
+    }
   }
 
   async checkConnection() {
