@@ -1,29 +1,25 @@
 import { inject, injectable } from "inversify";
 import { ContainerTypes } from "../container-types";
 import { QueryExecutorService } from "../query-executor/query-executor.service";
-import { ProductUrl } from "./product-url";
 import { fromDatabase } from "../query-executor/lib/from-database";
+import { ProductPrice } from "./product-price";
 
 @injectable()
-export class ProductUrlService {
+export class ProductPriceService {
   constructor(
     @inject(ContainerTypes.QueryExecutorService)
     private readonly queryExecutorService: QueryExecutorService,
-  ) {
-    this.startGetPriceScheduler();
-  }
+  ) {}
 
-  async create(data: Partial<ProductUrl>): Promise<ProductUrl> {
+  async create(data: Partial<ProductPrice>): Promise<ProductPrice> {
     try {
       const res = await this.queryExecutorService.executeQuery(
-        "INSERT INTO product_urls(type_id, url, product_id) VALUES($1, $2, $3) RETURNING *",
-        [data.typeId, data.url, data.productId],
+        "INSERT INTO product_prices(price, product_url_id) VALUES($1, $2) RETURNING *",
+        [data.price, data.productUrlId],
       );
-      return fromDatabase<ProductUrl>(res.rows[0], ProductUrl);
+      return fromDatabase<ProductPrice>(res.rows[0], ProductPrice);
     } catch (e) {
       throw e;
     }
   }
-
-  private startGetPriceScheduler() {}
 }

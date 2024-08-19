@@ -6,4 +6,5 @@ export const ContainerTypes = {
   UserService: Symbol.for("UserService"),
   ProductUrlService: Symbol.for("ProductUrlService"),
   ProductService: Symbol.for("ProductService"),
+  ProductPriceService: Symbol.for("ProductPriceService"),
 };

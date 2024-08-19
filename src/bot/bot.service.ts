@@ -13,6 +13,7 @@ import { Product } from "../product/product";
 import { ProductUrl } from "../product-url/product-url";
 import { ProductService } from "../product/product.service";
 import { ProductUrlService } from "../product-url/product-url.service";
+import { ProductPriceService } from "../product-price/product-price.service";
 
 // TODO: add menu command
 
@@ -59,6 +60,8 @@ export class BotService {
     private readonly productService: ProductService,
     @inject(ContainerTypes.ProductUrlService)
     private readonly productUrlService: ProductUrlService,
+    @inject(ContainerTypes.ProductPriceService)
+    private readonly productPriceService: ProductPriceService,
   ) {
     const bot = new Telegraf<MyContext>(config.get(ConfigKeys.TG_TOKEN));
 
@@ -119,9 +122,13 @@ export class BotService {
 
           const product = await productService.create({ ...ctx.session.product, userId: user.id });
 
-          await productUrlService.create({ ...ctx.session.productUrl, productId: product.id });
+          const productUrl = await productUrlService.create({ ...ctx.session.productUrl, productId: product.id });
 
-          await ctx.reply(`Продукт "${product.name}" успешно добавлен`);
+          const currentPrice = await parserService.parseProduct(productUrl.typeId, productUrl.url);
+
+          const productPrice = await productPriceService.create({ productUrlId: productUrl.id, price: currentPrice });
+
+          await ctx.reply(`Продукт "${product.name}" успешно добавлен. Текущая цена: ${productPrice.price}`);
 
           ctx.scene.enter(ScenesList.GENERAL);
         } catch (e: unknown) {

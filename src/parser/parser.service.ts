@@ -4,6 +4,7 @@ import { inject, injectable } from "inversify";
 import { ContainerTypes } from "../container-types";
 import { IConfig } from "../config/config.interface";
 import { ConfigKeys } from "../config/config-keys";
+import { ProductUrlTypes } from "../product-url/product-url-types";
 
 @injectable()
 export class ParserService {
@@ -12,27 +13,28 @@ export class ParserService {
     this.userAgent = config.get(ConfigKeys.USER_AGENT);
   }
 
-  async parseProduct(productUrl: string): Promise<string> {
+  async parseProduct(urlType: ProductUrlTypes, productUrl: string): Promise<number> {
     try {
-      const urlObj = new URL(productUrl);
-      const response = await fetch(productUrl, {
-        headers: {
-          // TODO: add geo
-          // TODO: add correct user-agent
-          "User-Agent": this.userAgent,
-          Host: urlObj.hostname,
-        },
-      });
-      const html = await response.text();
-      const root = parse(html);
+      switch (urlType) {
+        case ProductUrlTypes.GLOBUS: {
+          const urlObj = new URL(productUrl);
+          const response = await fetch(productUrl, {
+            headers: {
+              // TODO: add geo
+              // TODO: add correct user-agent
+              "User-Agent": this.userAgent,
+              Host: urlObj.hostname,
+            },
+          });
+          const html = await response.text();
+          const root = parse(html);
 
-      const price = Number(root.querySelector("[itemprop=price]")?.textContent);
-      const name = root.querySelector("h1[itemprop=name]")?.textContent;
+          const price = Number(root.querySelector("[itemprop=price]")?.textContent);
+          const name = root.querySelector("h1[itemprop=name]")?.textContent;
 
-      return JSON.stringify({
-        name,
-        price,
-      });
+          return price;
+        }
+      }
     } catch (e) {
       console.error(e);
       throw e;

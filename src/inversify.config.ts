@@ -8,6 +8,7 @@ import { ParserService } from "./parser/parser.service";
 import { UserService } from "./user/user.service";
 import { ProductService } from "./product/product.service";
 import { ProductUrlService } from "./product-url/product-url.service";
+import { ProductPriceService } from "./product-price/product-price.service";
 
 const container = new Container();
 container.bind<IConfig>(ContainerTypes.Config).to(ConfigService);
@@ -17,5 +18,6 @@ container.bind<ParserService>(ContainerTypes.ParserService).to(ParserService);
 container.bind<UserService>(ContainerTypes.UserService).to(UserService);
 container.bind<ProductService>(ContainerTypes.ProductService).to(ProductService);
 container.bind<ProductUrlService>(ContainerTypes.ProductUrlService).to(ProductUrlService);
+container.bind<ProductPriceService>(ContainerTypes.ProductPriceService).to(ProductPriceService);
 
 export { container };
