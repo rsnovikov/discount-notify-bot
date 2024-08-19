@@ -1,14 +1,14 @@
 import { parse } from "node-html-parser";
 import fetch from "node-fetch";
 import { inject, injectable } from "inversify";
-import { TYPES } from "../TYPES";
+import { ContainerTypes } from "../container-types";
 import { IConfig } from "../config/config.interface";
 import { ConfigKeys } from "../config/config-keys";
 
 @injectable()
 export class ParserService {
   private readonly userAgent: string;
-  constructor(@inject(TYPES.Config) private readonly config: IConfig) {
+  constructor(@inject(ContainerTypes.Config) private readonly config: IConfig) {
     this.userAgent = config.get(ConfigKeys.USER_AGENT);
   }
 
