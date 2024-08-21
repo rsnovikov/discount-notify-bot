@@ -1,0 +1,1 @@
+export const REQUESTS_PER_SECOND_LIMIT = 20;

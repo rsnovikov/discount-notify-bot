@@ -30,7 +30,7 @@ export class ProductService {
     }
   }
 
-  async create(data: Partial<Product>): Promise<Product> {
+  async createProduct(data: Partial<Product>): Promise<Product> {
     try {
       const res = await this.queryExecutorService.executeQuery(
         "INSERT INTO products(name, user_id) VALUES($1, $2) RETURNING *",

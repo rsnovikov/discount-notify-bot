@@ -11,7 +11,7 @@ export class UserService {
     private readonly queryExecutorService: QueryExecutorService,
   ) {}
 
-  async create(data: Partial<User>): Promise<User> {
+  async createUser(data: Partial<User>): Promise<User> {
     try {
       const res = await this.queryExecutorService.executeQuery("INSERT INTO users(tg_id) VALUES($1) RETURNING *", [
         data.tgId,
@@ -22,7 +22,7 @@ export class UserService {
     }
   }
 
-  async getByTgId(tgId: User["tgId"]): Promise<User> {
+  async getUserByTgId(tgId: User["tgId"]): Promise<User> {
     try {
       const res = await this.queryExecutorService.executeQuery("SELECT * FROM users WHERE tg_id=$1", [tgId]);
 

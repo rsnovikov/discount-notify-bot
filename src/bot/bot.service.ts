@@ -114,19 +114,25 @@ export class BotService {
             return;
           }
 
-          const user = await userService.getByTgId(ctx.from.id);
+          const user = await userService.getUserByTgId(ctx.from.id);
 
           if (!user) {
             return;
           }
 
-          const product = await productService.create({ ...ctx.session.product, userId: user.id });
+          const product = await productService.createProduct({ ...ctx.session.product, userId: user.id });
 
-          const productUrl = await productUrlService.create({ ...ctx.session.productUrl, productId: product.id });
+          const productUrl = await productUrlService.createProductUrl({
+            ...ctx.session.productUrl,
+            productId: product.id,
+          });
 
           const currentPrice = await parserService.parseProduct(productUrl.typeId, productUrl.url);
 
-          const productPrice = await productPriceService.create({ productUrlId: productUrl.id, price: currentPrice });
+          const productPrice = await productPriceService.createProductPrice({
+            productUrlId: productUrl.id,
+            price: currentPrice,
+          });
 
           await ctx.reply(`Продукт "${product.name}" успешно добавлен. Текущая цена: ${productPrice.price}`);
 
@@ -152,7 +158,7 @@ export class BotService {
 
     generalScene.action(ActionList.PRODUCT_LIST, async (ctx) => {
       try {
-        const user = await userService.getByTgId(ctx.from.id);
+        const user = await userService.getUserByTgId(ctx.from.id);
         const productList = await productService.findProduct({ userId: user.id });
 
         if (productList.length === 0) {
@@ -181,9 +187,9 @@ export class BotService {
 
     bot.start(async (ctx) => {
       try {
-        let user = await userService.getByTgId(ctx.from.id);
+        let user = await userService.getUserByTgId(ctx.from.id);
         if (!user) {
-          user = await userService.create({ tgId: ctx.from.id });
+          user = await userService.createUser({ tgId: ctx.from.id });
         }
         return ctx.reply("Выбери действие: ", generalActionsKeyboard);
       } catch (e) {

@@ -29,8 +29,9 @@ export class ParserService {
           const html = await response.text();
           const root = parse(html);
 
-          const price = Number(root.querySelector("[itemprop=price]")?.textContent);
-          const name = root.querySelector("h1[itemprop=name]")?.textContent;
+          const price = !Number.isNaN(Number(root.querySelector("[itemprop=price]")?.textContent))
+            ? Number(root.querySelector("[itemprop=price]")?.textContent)
+            : Number(root.querySelector(".catalog-detail__item-price-actual-main")?.textContent);
 
           return price;
         }

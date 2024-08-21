@@ -11,7 +11,7 @@ export class ProductPriceService {
     private readonly queryExecutorService: QueryExecutorService,
   ) {}
 
-  async create(data: Partial<ProductPrice>): Promise<ProductPrice> {
+  async createProductPrice(data: Partial<ProductPrice>): Promise<ProductPrice> {
     try {
       const res = await this.queryExecutorService.executeQuery(
         "INSERT INTO product_prices(price, product_url_id) VALUES($1, $2) RETURNING *",
